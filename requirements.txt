@@ -1,0 +1,5 @@
+langchain-core==0.3.79
+langgraph==0.6.10
+streamlit==1.50.0
+pytest==8.4.2
+defusedxml==0.7.1

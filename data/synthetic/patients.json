@@ -1,0 +1,52 @@
+[
+  {
+    "id": "P001",
+    "synthetic": true,
+    "age": 72,
+    "symptoms": [
+      "tosse",
+      "febre referida"
+    ],
+    "exams": [
+      {
+        "name": "radiografia de tórax",
+        "status": "pending"
+      }
+    ],
+    "protocol_id": "RESP-SIM-001",
+    "updated_at": "2026-09-01T12:00:00Z"
+  },
+  {
+    "id": "P002",
+    "synthetic": true,
+    "age": 45,
+    "symptoms": [
+      "tosse em melhora"
+    ],
+    "exams": [
+      {
+        "name": "hemograma",
+        "status": "completed",
+        "result": "resultado sintético disponível para revisão"
+      }
+    ],
+    "protocol_id": "RESP-SIM-001",
+    "updated_at": "2026-09-01T12:00:00Z"
+  },
+  {
+    "id": "P003",
+    "synthetic": true,
+    "age": 63,
+    "symptoms": [
+      "falta de ar referida"
+    ],
+    "exams": [
+      {
+        "name": "avaliação médica",
+        "status": "pending"
+      }
+    ],
+    "protocol_id": "RESP-SIM-001",
+    "updated_at": "2026-09-01T12:00:00Z"
+  }
+]

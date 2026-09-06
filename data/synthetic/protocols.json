@@ -1,0 +1,14 @@
+[
+  {
+    "id": "RESP-SIM-001",
+    "version": "1.0",
+    "synthetic": true,
+    "title": "Fluxo respiratório fictício para demonstração",
+    "sections": {
+      "1": "Conferir observações, histórico e exames no registro estruturado.",
+      "2": "Listar exames com status pending como pendências, sem inferir resultados.",
+      "3": "Relatar falta de ar registrada como alerta para avaliação humana, sem atribuir gravidade clínica automática.",
+      "4": "Submeter todo rascunho ao profissional responsável. Não emitir prescrições nem alterar tratamento."
+    }
+  }
+]
