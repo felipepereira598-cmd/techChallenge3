@@ -6,6 +6,11 @@ from src.llm import LocalLLM, DemoLLM
 from src.graph import build_graph
 from src.logger import AuditLogger
 
+@st.cache_resource
+def load_llm(mode, adapter, quantized):
+    # Serialize loading for equal keys; each session keeps its own graph/review.
+    return DemoLLM() if mode.startswith("Demonstração") else LocalLLM(adapter=adapter, quantized=quantized)
+
 st.set_page_config(page_title="Assistente hospitalar acadêmico", page_icon="🏥")
 st.title("Assistente hospitalar acadêmico")
 st.warning("Somente dados sintéticos. Não utilizar para atendimento real.")
@@ -17,7 +22,7 @@ key = (mode, adapter, quantized)
 if st.session_state.get("model_key") != key:
     try:
         with st.spinner("Preparando assistente..."):
-            llm = DemoLLM() if mode.startswith("Demonstração") else LocalLLM(adapter=adapter, quantized=quantized)
+            llm = load_llm(mode, adapter, quantized)
             st.session_state.graph = build_graph(llm, AuditLogger())
             st.session_state.model_key = key
             st.session_state.pop("config", None)
