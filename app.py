@@ -9,13 +9,15 @@ from src.logger import AuditLogger
 st.set_page_config(page_title="Assistente hospitalar acadêmico", page_icon="🏥")
 st.title("Assistente hospitalar acadêmico")
 st.warning("Somente dados sintéticos. Não utilizar para atendimento real.")
-mode = st.sidebar.selectbox("Modelo", ["Demonstração sem LLM", "Fine-tuned local"])
+mode = st.sidebar.selectbox("Modelo", ["Demonstração sem LLM", "Fine-tuned local"],
+                           index=1 if os.getenv("DEFAULT_MODEL") == "fine_tuned" else 0)
 adapter = os.getenv("ADAPTER_PATH", "models/adapter")
-key = (mode, adapter)
+quantized = os.getenv("LLM_QUANTIZED", "0") == "1"
+key = (mode, adapter, quantized)
 if st.session_state.get("model_key") != key:
     try:
         with st.spinner("Preparando assistente..."):
-            llm = DemoLLM() if mode.startswith("Demonstração") else LocalLLM(adapter=adapter)
+            llm = DemoLLM() if mode.startswith("Demonstração") else LocalLLM(adapter=adapter, quantized=quantized)
             st.session_state.graph = build_graph(llm, AuditLogger())
             st.session_state.model_key = key
             st.session_state.pop("config", None)
