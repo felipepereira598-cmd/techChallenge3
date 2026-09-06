@@ -86,7 +86,7 @@ O checkpointer em memória mantém a pausa durante a sessão. Reiniciar o servid
 
 `results/base.jsonl` e `results/fine_tuned.jsonl` preservam respostas individuais. `results/comparison.json` contém token F1 MedQuAD, taxa de padrões de risco, acurácia PubMedQA e respostas fora do formato. Token F1 mede sobreposição lexical, não correção médica. PubMedQA mede resposta ao resumo científico, não conduta clínica. O conjunto PQA-L completo/amostra é uma avaliação local, não o protocolo oficial de benchmark. Faça revisão cega adicional usando `data/evaluation/human_rubric.json`.
 
-**Não há resultado de treinamento pré-calculado nem ganho de qualidade declarado.** Execute o notebook e incorpore os resultados reais ao [relatório técnico](docs/relatorio_tecnico.md). O [roteiro de vídeo](docs/roteiro_video.md) cobre a apresentação de até 15 minutos. O código implementa o pipeline; a entrega acadêmica só estará completa após treinamento, análise de resultados e gravação.
+**Treinamento e avaliação realizados.** MedQuAD token F1: 0,2821 → 0,2950; PubMedQA: 32% → 20% (50 exemplos por conjunto). Não houve melhoria consistente. Consulte a análise no [relatório técnico](docs/relatorio_tecnico.md). O [roteiro de vídeo](docs/roteiro_video.md) cobre a apresentação de até 15 minutos. O código implementa o pipeline; a entrega acadêmica só estará completa após treinamento, análise de resultados e gravação.
 
 ## Estrutura
 
@@ -112,3 +112,7 @@ Os dados processados são reconstruídos pelo pipeline e ficam fora do Git por p
 O notebook instala as dependencias em `.venv-colab`, sem misturar as versoes do projeto com torchvision, diffusers, gradio e LangChain preinstalados no Colab. Todos os comandos de treino e avaliacao usam esse Python isolado. A saida completa aparece na celula e e gravada em `logs/colab-training.log` ou `logs/colab-evaluation.log`. O aviso de HF_TOKEN ausente nao impede o acesso ao modelo publico.
 
 Para atualizar uma sessao existente, execute a primeira celula (git pull --ff-only) e a instalacao novamente. Alteracoes locais conflitantes nao sao descartadas automaticamente.
+
+## Interface na GPU do Colab
+
+Após exportar os artefatos, execute a última célula do notebook: ela inicia Streamlit dentro do Colab com o adapter treinado e quantização de 4 bits. Não repita treino ou avaliação. O acesso usa o proxy do próprio Colab e depende da sessão ativa. Para encerrar o aplicativo, execute `from scripts.colab_app import stop; stop()`. Os logs ficam em `logs/audit.jsonl` e `logs/streamlit.log`; baixe-os antes de encerrar a sessão.

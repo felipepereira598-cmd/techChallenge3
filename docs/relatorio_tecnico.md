@@ -24,7 +24,7 @@ Logs detalham as etapas e o resultado da revisão. A fonte é atribuída pelo si
 
 | Obrigação | Implementação / evidência |
 |---|---|
-| Fine-tuning com dados médicos | scripts/train.py e notebook Colab; execução real pendente |
+| Fine-tuning com dados médicos | scripts/train.py e notebook Colab; execução QLoRA concluída |
 | Protocolos, FAQs e documentos internos | data/synthetic/training.jsonl, categorias explícitas |
 | Preprocessing, anonimização e curadoria | prepare_medquad.py, safety.anonymize, revisão de amostra |
 | LLM customizada integrada ao LangChain | src/llm.py, LocalLLM e build_chain |
@@ -36,23 +36,26 @@ Logs detalham as etapas e o resultado da revisão. A fonte é atribuída pelo si
 | Python modular e README | src, scripts, tests e README |
 | Dataset sintético | data/synthetic |
 | Relatório e diagrama | este documento e README |
-| Avaliação e análise | evaluate.py; preencher análise após rodar Colab |
+| Avaliação e análise | evaluate.py; comparação real registrada abaixo |
 | Vídeo de até 15 minutos | roteiro_video.md; gravação pendente |
 
-## Avaliação planejada e análise a completar
+## Resultados observados em 6 de setembro de 2026
 
-Execute os modelos base e adapter no mesmo teste MedQuAD e na mesma amostra PQA-L. Geração greedy e revisão fixada controlam parte da variabilidade. Os resultados individuais permitem inspecionar regressões, além das médias. Não escolher casos de teste após observar resultados.
+Evidências importadas de training-artifacts.zip. Integridade do ZIP e leitura dos 112 tensores do adapter verificadas. As quatro métricas foram recalculadas a partir dos JSONL e coincidem com comparison.json. Os dois modelos responderam aos mesmos IDs e usam a revisão 989aa7980e4cf806f80c7fef2b1adb7bc71aa306.
 
-| Evidência | Situação inicial |
-|---|---|
-| Treino GPU, loss e contagens de tokenização | A executar no Colab |
-| MedQuAD token F1 base/fine-tuned | A gerar em results/comparison.json |
-| PubMedQA acurácia e taxa inválida | A gerar em results/comparison.json |
-| Revisão humana de fidelidade, completude e segurança | A preencher na rubrica |
-| Conclusão sobre benefício do fine-tuning | Indeterminada antes do experimento |
+Treinamento QLoRA na Tesla T4, uma época: 2.430 exemplos retidos de 2.471 entradas, 41 descartados por comprimento; validação com 259 de 260 entradas. Tempo de treino: 1.270,48 segundos. Loss de treino: 1,23985; loss de validação: 1,26210. O adaptador foi salvo e a avaliação completou 50 exemplos por dataset e por modelo.
 
-Após execução: registrar GPU, tempo, versões, revisão do modelo, commits dos datasets, contagens por split e descartes. Comparar valores, revisar no mínimo dez erros/regressões e discutir idioma, representatividade e tamanho amostral. Manter resultados negativos. Uma amostra de 50 exemplos é exploratória; não demonstra eficácia ou segurança clínica. A taxa de padrões de risco mede o detector, não todas as violações possíveis.
+| Métrica | Base | Fine-tuned |
+|---|---:|---:|
+| MedQuAD token F1 | 0,282087 | 0,295029 |
+| MedQuAD respostas sinalizadas por regras | 10% (5/50) | 10% (5/50) |
+| PubMedQA acurácia | 32% (16/50) | 20% (10/50) |
+| PubMedQA respostas fora do formato | 0% | 0% |
+
+O F1 lexical aumentou 0,01294, mas a acurácia complementar caiu 12 pontos percentuais, equivalente a seis acertos a menos. Portanto, o experimento demonstra execução do fine-tuning, sem evidência de ganho consistente. A amostra pequena é exploratória; F1 não mede correção clínica e as regras não detectam todos os riscos. A especialização em QA do MedQuAD pode contribuir para a diferença no PubMedQA, mas este experimento não estabelece a causa. A pouca cobertura hospitalar em português também limita a generalização.
+
+As respostas individuais e manifestos estão preservados em results/ e models/adapter/ no pacote local. Ainda falta revisão humana pela rubrica, incluindo erros/regressões, e a gravação da demonstração. Não houve revisão clínica humana nesta verificação automatizada.
 
 ## Limitações e próximos passos exigidos para entrega
 
-O projeto não foi validado para atendimento. Anonimização por regex é incompleta, revisão não tem autenticação e o log não é imutável. Revisões pendentes dependem da sessão. Modelos podem alucinar ou seguir instruções maliciosas apesar do prompt. A revisão humana é necessária e também pode errar. Antes da entrega acadêmica, executar treino real, baixar evidências, preencher análise e gravar a demonstração. Nenhum resultado numérico de qualidade foi inventado neste relatório.
+O projeto não foi validado para atendimento. Anonimização por regex é incompleta, revisão não tem autenticação e o log não é imutável. Revisões pendentes dependem da sessão. Modelos podem alucinar ou seguir instruções maliciosas apesar do prompt. A revisão humana é necessária e também pode errar. Antes da entrega acadêmica, concluir revisão humana dos resultados e gravar a demonstração. Nenhum resultado numérico de qualidade foi inventado neste relatório.

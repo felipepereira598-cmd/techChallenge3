@@ -22,6 +22,8 @@ def start(root='/content/medical-assistant', port=8501):
                 str(root/'.venv-colab/bin/python'), '-m', 'streamlit', 'run', 'app.py',
                 '--server.address', '127.0.0.1', '--server.port', str(port),
                 '--server.headless', 'true', '--browser.gatherUsageStats', 'false',
+                # The authenticated Colab proxy embeds a different origin.
+                '--server.enableCORS', 'false', '--server.enableXsrfProtection', 'false',
             ], cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT)
     for _ in range(30):
         if _process.poll() is not None:
