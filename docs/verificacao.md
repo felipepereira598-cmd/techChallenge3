@@ -13,3 +13,8 @@ Ainda não executado: QLoRA em GPU com o modelo Qwen2.5-1.5B-Instruct completo, 
 ## Correcao e teste no Colab
 
 O Colab com Python 3.13 apresentava incompatibilidade entre torch 2.8.0 e torchvision 0.26.0 preinstalado, impedindo a importacao de Trainer. A instalacao passou a usar um venv sem pacotes globais. pip check e as importacoes passaram nesse ambiente. Foram executados um passo real de QLoRA com Qwen2.5-1.5B-Instruct na Tesla T4, validacao em dois exemplos e salvamento do adapter de diagnostico em models/qlora-smoke. O treinamento completo e a avaliacao de qualidade continuam pendentes. Os testes automatizados passaram de 14 para 16, incluindo a propagacao de erros de subprocessos.
+
+
+## Evidencias recebidas em 2026-09-06
+
+As pendencias de treinamento e avaliacao mencionadas acima foram concluidas: o ZIP entregue contem o adapter final, manifestos e respostas de 50 casos por dataset/modelo. A integridade do ZIP e os 112 tensores foram verificados; as metricas foram recalculadas e coincidem com comparison.json. A analise atual esta no relatorio tecnico. Revisao humana e video permanecem pendentes.
