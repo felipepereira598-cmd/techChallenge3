@@ -106,3 +106,9 @@ O checkpointer em memória mantém a pausa durante a sessão. Reiniciar o servid
 - [PEFT quantization](https://huggingface.co/docs/peft/developer_guides/quantization) e [LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts).
 
 Os dados processados são reconstruídos pelo pipeline e ficam fora do Git por padrão. Os exemplos sintéticos autorais ficam versionados. Isso satisfaz o entregável de exemplo de dataset sem duplicar datasets de terceiros.
+
+## Compatibilidade com o Colab
+
+O notebook instala as dependencias em `.venv-colab`, sem misturar as versoes do projeto com torchvision, diffusers, gradio e LangChain preinstalados no Colab. Todos os comandos de treino e avaliacao usam esse Python isolado. A saida completa aparece na celula e e gravada em `logs/colab-training.log` ou `logs/colab-evaluation.log`. O aviso de HF_TOKEN ausente nao impede o acesso ao modelo publico.
+
+Para atualizar uma sessao existente, execute a primeira celula (git pull --ff-only) e a instalacao novamente. Alteracoes locais conflitantes nao sao descartadas automaticamente.
