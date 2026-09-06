@@ -29,14 +29,17 @@ def main(args):
     if not cases or not pubmed: raise ValueError("Ambos os conjuntos de avaliação devem conter exemplos.")
     summary={}
     for name,adapter in [("base",None),("fine_tuned",str(args.adapter))]:
+        print(f"[{name}] Carregando modelo...", flush=True)
         llm=LocalLLM(adapter,model_id=args.model,revision=args.revision,quantized=args.quantized)
         outputs=[]
-        for case in cases:
+        for index, case in enumerate(cases, 1):
+            print(f"[{name}] MedQuAD {index}/{len(cases)}", flush=True)
             response=llm.generate(case["messages"][:-1])
             outputs.append({"id":case["id"],"dataset":"MedQuAD","prediction":response,"question":case["messages"][-2]["content"],
                             "reference":case["messages"][-1]["content"],"source":case["source"],
                             "token_f1":token_f1(response,case["messages"][-1]["content"]),"safety_flags":violations(response)})
-        for case in pubmed:
+        for index, case in enumerate(pubmed, 1):
+            print(f"[{name}] PubMedQA {index}/{len(pubmed)}", flush=True)
             response=llm.generate([{"role":"system","content":"Answer with exactly yes, no, or maybe based on the abstract."},
                 {"role":"user","content":case["context"]+"\nQuestion: "+case["question"]}],max_new_tokens=8)
             outputs.append({"id":case["id"],"dataset":"PubMedQA","prediction":response,"question":case["question"],"context":case["context"],
@@ -49,6 +52,7 @@ def main(args):
             "pubmedqa_accuracy":sum(o["predicted_label"]==o["label"] for o in pub)/len(pub),
             "pubmedqa_invalid_rate":sum(o["predicted_label"]=="invalid" for o in pub)/len(pub)}
         write_jsonl(args.output/f"{name}.jsonl",outputs)
+        print(f"[{name}] Resultados salvos em {args.output / (name + '.jsonl')}", flush=True)
         del llm; gc.collect()
         if torch.cuda.is_available(): torch.cuda.empty_cache()
     (args.output/"comparison.json").write_text(json.dumps(summary,indent=2),encoding="utf-8")

@@ -32,12 +32,12 @@ def main(args):
         if not valid: raise ValueError("Dataset vazio após tokenização; aumente max-length ou revise os dados.")
         return Dataset.from_list(valid), {"input":len(rows),"retained":len(valid),"dropped":len(rows)-len(valid)}
     train,train_counts=dataset([args.train,args.synthetic]); val,val_counts=dataset([args.validation])
-    kwargs={"revision":args.revision,"torch_dtype":torch.float16 if torch.cuda.is_available() else torch.float32}
+    kwargs={"revision":args.revision,"dtype":torch.float16 if torch.cuda.is_available() else torch.float32}
     if args.qlora:
         if not torch.cuda.is_available(): raise ValueError("QLoRA requer CUDA no Colab.")
         kwargs.update(device_map={"":0},quantization_config=BitsAndBytesConfig(load_in_4bit=True,bnb_4bit_quant_type="nf4",bnb_4bit_use_double_quant=True,bnb_4bit_compute_dtype=torch.float16))
     model=AutoModelForCausalLM.from_pretrained(args.model,**kwargs)
-    if args.qlora: model=prepare_model_for_kbit_training(model)
+    if args.qlora: model=prepare_model_for_kbit_training(model, gradient_checkpointing_kwargs={"use_reentrant": False})
     model=get_peft_model(model,LoraConfig(r=8,lora_alpha=16,lora_dropout=0.05,target_modules=["q_proj","v_proj"],task_type="CAUSAL_LM"))
     model.config.use_cache=False
     def collate(batch):
