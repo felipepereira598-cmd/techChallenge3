@@ -9,3 +9,7 @@
 - O avaliador também completou a comparação base/adapter desse modelo aleatório, com dois casos por dataset. Esses resultados só verificam a execução e não representam desempenho médico; não foram incluídos como métricas do projeto.
 
 Ainda não executado: QLoRA em GPU com o modelo Qwen2.5-1.5B-Instruct completo, avaliação de qualidade após o fine-tuning e revisão clínica humana. Esses passos devem ser realizados no notebook Colab antes da entrega acadêmica. O vídeo também precisa ser gravado.
+
+## Correcao e teste no Colab
+
+O Colab com Python 3.13 apresentava incompatibilidade entre torch 2.8.0 e torchvision 0.26.0 preinstalado, impedindo a importacao de Trainer. A instalacao passou a usar um venv sem pacotes globais. pip check e as importacoes passaram nesse ambiente. Foram executados um passo real de QLoRA com Qwen2.5-1.5B-Instruct na Tesla T4, validacao em dois exemplos e salvamento do adapter de diagnostico em models/qlora-smoke. O treinamento completo e a avaliacao de qualidade continuam pendentes. Os testes automatizados passaram de 14 para 16, incluindo a propagacao de erros de subprocessos.
